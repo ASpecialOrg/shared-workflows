@@ -1,0 +1,39 @@
+name: reusable workflow for .net build
+description: Use for build .Net solutions
+
+on:
+  workflow_call:
+    inputs:
+      the-solution:
+        description: The name of the solution file.
+        required: true
+        type: string
+    secrets:
+      azure-profile:
+        required: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Secret Information
+      run: echo "Value of secret matches - ${{ secrets.azure-profile  == 'Placeholder' }}"
+    - name: Print name of solution file
+      run: echo "Solution file name is ${{ inputs.the-solution }}"
+    - name: list files in root directory
+      run: |
+        Get-ChildItem -Path . | ForEach-Object { Write-Output $_.Name }
+      shell: pwsh
