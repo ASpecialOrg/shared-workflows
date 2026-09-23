@@ -18,21 +18,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    
+    - name: code checkout
+      uses: actions/checkout@v4
+        
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10
-    - name: Restore dependencies
+        
+    - name: restore dependencies
       run: dotnet restore
-    - name: Build
+      
+    - name: build
       run: dotnet build --no-restore
-    - name: Test
+
+    - name: run tests
       run: dotnet test --no-build --verbosity normal
+      
+    - name: publish code
+      run: dotnet publish -c Release  --property:PublishDir="${{env.DOTNET_ROOT}}\myapp"
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: .net-app
+        path: ${{env.DOTNET_ROOT}}/myapp
+          
     - name: Secret Information
       run: echo "Value of secret matches - ${{ secrets.azure-profile  == 'Placeholder' }}"
+      
     - name: Print name of solution file
       run: echo "Solution file name is ${{ inputs.the-solution }}"
+      
     - name: list files in root directory
       run: |
         Get-ChildItem -Path . | ForEach-Object { Write-Output $_.Name }
