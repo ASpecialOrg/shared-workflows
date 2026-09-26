@@ -7,20 +7,27 @@ on:
         required: true
    
 jobs:
+  
   review:
+        
     if: startsWith(github.event.comment.body, '/review')
     runs-on: ubuntu-latest
     steps:
+      - name: comment body
+        run: echo "The issue body is ${{ github.event.comment.body }}"
       - uses: ca-dp/code-butler@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           cmd: review
           lang: en
+  
   chat:
     if: startsWith(github.event.comment.body, '/chat')
     runs-on: ubuntu-latest
     steps:
+      - name: comment body
+        run: echo "The issue body is ${{ github.event.comment.body }}"
       - uses: ca-dp/code-butler@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
