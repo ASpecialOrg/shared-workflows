@@ -2,13 +2,12 @@ name: Reusable Code Butler
 
 on:
   workflow_call:
-    inputs:
     secrets:
       GITHUB_TOKEN:
         required: true
       OPENAI_API_KEY:
         required: true
-
+   
 jobs:
   review:
     if: startsWith(github.event.comment.body, '/review')
